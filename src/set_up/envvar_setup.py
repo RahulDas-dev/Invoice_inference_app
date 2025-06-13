@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
+from quart import Quart
 
-from application import InvoiceInferApp
 
-
-def register_app(app: InvoiceInferApp) -> None:  # noqa: ARG001
+def register_app(app: Quart) -> None:  # noqa: ARG001
     load_dotenv()

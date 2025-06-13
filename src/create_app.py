@@ -2,12 +2,13 @@
 import logging
 import time
 
-from application import InvoiceInferApp
+from application import DocumentInferApp
 from configs import app_config
 
 
-def _register_extensions(app: InvoiceInferApp, bebug: bool = False) -> None:
+def _register_extensions(app: DocumentInferApp, bebug: bool = False) -> None:
     from set_up import (
+        api_schema,
         envvar_setup,
         health_setup,
         lifespan_setup,
@@ -15,17 +16,16 @@ def _register_extensions(app: InvoiceInferApp, bebug: bool = False) -> None:
         timezone_setup,
         uploads_setup,
         warning_setup,
-        werkzeug_setup,
     )
 
     extensions = [
         timezone_setup,
-        warning_setup,
         logging_setup,
-        werkzeug_setup,
+        warning_setup,
+        envvar_setup,
+        api_schema,
         health_setup,
         lifespan_setup,
-        envvar_setup,
         uploads_setup,
     ]
     for extension in extensions:
@@ -38,22 +38,27 @@ def _register_extensions(app: InvoiceInferApp, bebug: bool = False) -> None:
             )
 
 
-def _register_services(app: InvoiceInferApp) -> None:
-    from service import InvoiceService, Pdf2ImgService
-
-    Pdf2ImgService.configure_from_app(app)
-    InvoiceService.configure_from_app(app)
+def _register_services(app: DocumentInferApp) -> None:
+    pass
 
 
-def _register_blueprints(app: InvoiceInferApp) -> None:
-    from blueprints import api
+def _register_blueprints(app: DocumentInferApp) -> None:
+    from quart import Blueprint
 
-    api.init_app(app)
+    from blueprints import invoice_bp
+
+    api_v1 = Blueprint("api_v1", __name__, url_prefix="/api/v1")
+
+    # Register all document processing blueprints
+    api_v1.register_blueprint(invoice_bp)
+
+    # Register the main API blueprint with the app
+    app.register_blueprint(api_v1)
 
 
-def create_application() -> InvoiceInferApp:
+def create_application() -> DocumentInferApp:
     start_time = time.perf_counter()
-    app = InvoiceInferApp(__name__)
+    app = DocumentInferApp(__name__)
     app.config.from_mapping(app_config.model_dump())
     debug_ = app.config.get("DEBUG", False)
     _register_extensions(app, debug_)

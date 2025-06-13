@@ -1,9 +1,8 @@
-from application import InvoiceInferApp
+from application import DocumentInferApp
 
 
-def register_app(app: InvoiceInferApp) -> None:
-    with app.app_context():
-        if app.config.get("DEBUG", False) is False:
-            import warnings
+def register_app(app: DocumentInferApp) -> None:
+    if app.config.get("DEBUG", False) is False:
+        import warnings
 
-            warnings.simplefilter("ignore", ResourceWarning)
+        warnings.simplefilter("ignore", ResourceWarning)

@@ -1,14 +1,14 @@
 # Python-generated files
 __pycache__/
 **/__pycache__/
-*.py[oc]
 build/
 dist/
 wheels/
 *.egg-info
-**/*.ipynb_checkpoints/
+.venv/
+.ipynb_checkpoints/
+.DS_STORE
+**/.ipynb_checkpoints
+.ruff_cache/
 
-# Virtual environments
-.venv
-instance/*
 .env

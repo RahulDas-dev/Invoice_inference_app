@@ -1,5 +1,5 @@
-from flask import Flask
+from quart import Quart
 
 
-class InvoiceInferApp(Flask):
+class DocumentInferApp(Quart):
     pass

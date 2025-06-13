@@ -1,8 +1,8 @@
 services:
   doc-inference:
-    image: doc-infer:v1
+    image: doc-inference
     volumes:
-      - ./config.cfg:/app/config.cfg:ro
+      - ./.config:/app/.config:ro
       - ./.env:/app/.env:ro
     ports:
       - 5001:5001

@@ -8,16 +8,27 @@ RUN POPPLER_PATH=$(dirname $(which pdftotext)) && echo "POPPLER_PATH=$POPPLER_PA
 ENV POPPLER_PATH=$POPPLER_PATH
 ENV PATH=$POPPLER_PATH:$PATH
 
+# copy the application to app directory 
 COPY src /app/src
-COPY run_app.py pyproject.toml uv.lock .env /app/
+COPY run_app.py /app/run_app.py
+COPY pyproject.toml /app/pyproject.toml
+COPY uv.lock /app/uv.lock
+COPY .env /app/.env
 COPY .config.prod /app/.config
 
+# app directory is the current working directory
 WORKDIR /app
+
+# create a temp direcoroty
 RUN mkdir -p /app/temp
 
-RUN pip install uv
-RUN uv sync --frozen
-RUN source .venv/bin/activate
-ENTRYPOINT [ "sh", "-c", "gunicorn --bind \"${DIFY_BIND_ADDRESS:-0.0.0.0}:${DIFY_PORT:-5001}\" --workers ${SERVER_WORKER_AMOUNT:-1} --worker-class ${SERVER_WORKER_CLASS:-gevent} --worker-connections ${SERVER_WORKER_CONNECTIONS:-10} --timeout ${GUNICORN_TIMEOUT:-200} app:app" ]
+# install uv
+RUN pip install --no-cache-dir uv==0.4.24
+
+# install dependency
+RUN uv sync --frozen --no-dev
+
+# run the app
+ENTRYPOINT [ "uv", "run", "hypercorn", "run_app:app", "--bind", "0.0.0.0:5005" ]
 
 

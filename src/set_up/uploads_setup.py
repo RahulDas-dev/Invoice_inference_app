@@ -1,6 +1,8 @@
-from application import InvoiceInferApp
-from library.extensions import configure_uploads, pdf_loader
+from quart_uploads import configure_uploads
+
+from application import DocumentInferApp
+from library.extensions import pdf_loader
 
 
-def register_app(app: InvoiceInferApp) -> None:
+def register_app(app: DocumentInferApp) -> None:
     configure_uploads(app, pdf_loader)
