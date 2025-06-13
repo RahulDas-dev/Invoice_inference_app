@@ -1,13 +1,18 @@
 import asyncio
-from asyncio.log import logger
+import logging
 from pathlib import Path
+from typing import TYPE_CHECKING
 
 import pypdfium2 as pdfium
-from PIL.Image import Image
 from pypdfium2._helpers import PdfBitmap
 
 from src.configs import InvoiceInferConfig
 from src.service.invoice.utility import async_range
+
+if TYPE_CHECKING:
+    from PIL.Image import Image
+
+logger = logging.getLogger("asyncio")
 
 
 class Pdf2ImgConverter:
@@ -86,7 +91,7 @@ class Pdf2ImgConverter:
             async for page_index in async_range(page_count):
                 tasks.append(
                     self._convert_to_image_and_save(
-                        pdf_doc[page_index].render(scale=3, rotation=0),
+                        pdf_doc[page_index].render(scale=8.4, rotation=0),  # type: ignore
                         page_index + 1,
                         output_folder,
                     )

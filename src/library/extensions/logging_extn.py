@@ -67,6 +67,7 @@ class LoggingExtension:
 
         logging.getLogger("requests").setLevel(logging.WARNING)
         logging.getLogger("httpx").setLevel(logging.WARNING)
+        logging.getLogger("asyncio").setLevel(logging.INFO)
         logging.basicConfig(
             level=self._log_lvl,
             format=self._log_fmt,

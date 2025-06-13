@@ -8,7 +8,8 @@ from quart_schema.pydantic import File
 from quart_uploads import UploadNotAllowed
 
 from library.extensions import pdf_loader
-from service.invoice import InvoiceData, iter_workflow
+from service.invoice import iter_workflow
+from src.service.invoice.output_format import InvoiceData
 
 from .background_task import cleanup_temp_files
 
@@ -43,6 +44,7 @@ async def process_single_invoice(data: Reqst) -> tuple:
         logger.error(f"Error While Processing {e!s}...")
         current_app.add_background_task(cleanup_temp_files, [uploaded_path])
         return await make_response(jsonify(message=str(e))), 403
-    invoices = InvoiceData(details=[*result.final_output], token_expenditure=[*result.token_count])
+    invoices = result.to_invoice_data()
+    logger.info(f"Processed invoices: {invoices}")
     current_app.add_background_task(cleanup_temp_files, [uploaded_path, result.image_dir])
     return invoices, 201

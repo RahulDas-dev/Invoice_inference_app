@@ -1,12 +1,7 @@
 FROM python:3.11
 
 RUN apt update && apt upgrade -y
-RUN apt install -y poppler-utils
 
-# Set the POPPLER_PATH environment variable dynamically
-RUN POPPLER_PATH=$(dirname $(which pdftotext)) && echo "POPPLER_PATH=$POPPLER_PATH" >> /etc/environment
-ENV POPPLER_PATH=$POPPLER_PATH
-ENV PATH=$POPPLER_PATH:$PATH
 
 # copy the application to app directory 
 COPY src /app/src
